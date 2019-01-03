@@ -78,6 +78,10 @@
     <bean id="window" class="com.koala.learn.utils.feature.WindowFeature" />
     <bean id="fft" class="com.koala.learn.utils.feature.DFTFeature" />
     <bean id="wav" class="com.koala.learn.utils.feature.WavedecFeature" />
+    <bean id="time" class="com.koala.learn.utils.feature.TimeFeature" />
+    <bean id="ocsvm" class="com.koala.learn.utils.feature.OneClassSVMFeature"/>
+    <bean id="isolation" class="com.koala.learn.utils.feature.IsolationForestFeature"/>
+
 
 
     <bean class="com.google.gson.Gson" />

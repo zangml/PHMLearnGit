@@ -88,10 +88,30 @@ public class LabDesignBGService {
         Gson gson = new Gson();
         mJedisAdapter.lpush(featureKey,gson.toJson(vo));
     }
+    public void savePre(Lab lab, Feature feature, Map<String,String> map){
 
-    public File addFeature(HttpSession session, Feature feature, Map<String,String> param, Lab lab)  {
+        String preKey = RedisKeyUtil.getPreKey(lab.getId());
+        System.out.println(preKey);
+        List<FeatureParam> paramList = mFeatureParamMapper.selectAllByFeatureId(feature.getId());
+
+        FeatureVo vo = new FeatureVo();
+        vo.setFeature(feature);
+        for (FeatureParam param:paramList){
+            if (map.get(param.getShell()) != null){
+                param.setDefaultValue(map.get(param.getShell()));
+            }
+        }
+        vo.setParamList(paramList);
+        Gson gson = new Gson();
+        mJedisAdapter.lpush(preKey,gson.toJson(vo));
+    }
+
+
+    public File addFeature(HttpSession session, Feature feature, Map<String,String> param, Lab lab) throws Exception {
         ApplicationContext ac = WebApplicationContextUtils.getWebApplicationContext(session.getServletContext());
         IFeature filter = (IFeature) ac.getBean(feature.getLabel());
+        System.out.println(feature.getName());
+        System.out.println(param.size());
         List<String> paramList = new ArrayList<>();
         for (String key:param.keySet()){
             if (StringUtils.isNotBlank(param.get(key))){
@@ -107,8 +127,9 @@ public class LabDesignBGService {
                 options[i] = paramList.get(i);
                 name.append(paramList.get(i));
             }
+            System.out.println(options.length);
+            System.out.println(options[0]+" " +options[1]);
             filter.setOptions(options);
-
         }
 
         String fileKey = RedisKeyUtil.getFileKey(lab.getId());
@@ -125,8 +146,8 @@ public class LabDesignBGService {
             loader.setSource(input);
             Instances instances = loader.getDataSet();
             instances.setClassIndex(instances.numAttributes()-1);
-            if(feature.getId()>=5) {
-                System.out.println("feature.getId()>=5");
+            if(feature.getType()==2||feature.getType()==3) {
+                System.out.println("feature.getType==2||feature.getType()==3");
                 File out = new File(input.getParent(), input.getName().replace(".arff", "") + name + ".csv");
                 filter.filter(instances, input, out);
                 out= WekaUtils.csv2arff(out);
@@ -263,5 +284,6 @@ public class LabDesignBGService {
         saver.setInstances(test);
         saver.writeBatch();
         return Arrays.asList(testFile,trainFile);
+
     }
 }

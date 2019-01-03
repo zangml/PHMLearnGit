@@ -3,6 +3,7 @@ package com.koala.learn.utils.treat;
 import com.google.gson.Gson;
 import com.koala.learn.Const;
 import com.koala.learn.entity.EchatsOptions;
+import com.koala.learn.entity.EchatsOptions3D;
 import com.koala.learn.utils.Complex;
 import com.koala.learn.utils.PythonUtils;
 import com.koala.learn.utils.WekaUtils;
@@ -33,16 +34,20 @@ public class ViewUtils {
     public static final int VIEW_RELATIVE = 3;
     public static final int VIEW_REG_ATTRI=4;
     public static final int VIEW_REG_RELATIVE =5;
+    public static final int VIEW_REG_PCA2 =6;
+    public static final int VIEW_REG_PCA3 =7;
 
     private static final int INTERNAL = 80;
 
 
     public static Map<Integer,String> getTypeMap(){
         Map<Integer,String> map = new HashMap<>();
-        map.put(VIEW_PCA,"实验数据降维散点图");
+        map.put(VIEW_PCA,"分类数据降维散点图");
         map.put(VIEW_ATTRI,"单一属性类别分析");
         map.put(VIEW_MULATTRI,"二维属性类别分析");
         map.put(VIEW_REG_ATTRI,"单一属性预测分析");
+        map.put(VIEW_REG_PCA2,"回归数据降维二维散点图");
+        map.put(VIEW_REG_PCA3,"回归数据降维三维散点图");
         return map;
     }
     public static EchatsOptions resloveAttribute(Instances instances, String attributeName){
@@ -232,7 +237,7 @@ public class ViewUtils {
             if (i%step != 0){
                 continue;
             }
-            Instance instance = instances.get(i);
+            Instance instance = res.get(i);
             String classId = null;
             try {
                 classId = instance.stringValue(instance.numAttributes()-1);
@@ -249,17 +254,86 @@ public class ViewUtils {
         return options;
     }
 
+    public static EchatsOptions resloveRegPCA(Instances instances) throws Exception{
+        PrincipalComponents pca = new PrincipalComponents();
+        pca.setInputFormat(instances);
+        pca.setOptions(new String[]{"-M","2"});
+        Instances res = Filter.useFilter(instances,pca);
+
+        EchatsOptions options = new EchatsOptions();
+        options.setTitle(new EchatsOptions.TitleBean("PCA降维散点图","二维"));
+        options.setXAxis(Arrays.asList(new EchatsOptions.XAxisBean[]{new EchatsOptions.XAxisBean("value",true,new EchatsOptions.XAxisBean.AxisLabelBean())}));
+        options.setYAxis(Arrays.asList(new EchatsOptions.YAxisBean[]{new EchatsOptions.YAxisBean("value",true,new EchatsOptions.YAxisBean.AxisLabelBeanX())}));
+
+        List<EchatsOptions.SeriesBean> seriesBeans = new ArrayList<EchatsOptions.SeriesBean>();
+
+        EchatsOptions.SeriesBean normal = new EchatsOptions.SeriesBean();
+        normal.setType("scatter");
+        normal.setItemStyle(new EchatsOptions.SeriesBean.ItemStyleBean(new EchatsOptions.SeriesBean.ItemStyleBean.NormalBean("#00ffff")));
+        List<List<Double>> nData = new ArrayList<List<Double>>();
+
+        for (int i=0;i<instances.size();i++){
+            Instance instance = res.get(i);
+            nData.add(Arrays.asList(new Double[]{instance.value(0),instance.value(1)}));
+        }
+
+        normal.setSymbolSize(4);
+        normal.setData(nData);
+        seriesBeans.add(normal);
+        options.setSeries(seriesBeans);
+        return options;
+    }
+    public static EchatsOptions3D resloveRegPCA3D(Instances instances) throws Exception{
+        PrincipalComponents pca = new PrincipalComponents();
+        pca.setInputFormat(instances);
+        pca.setOptions(new String[]{"-M","3"});
+        Instances res = Filter.useFilter(instances,pca);
+
+        EchatsOptions3D options = new EchatsOptions3D();
+        options.setTitle(new EchatsOptions3D.TitleBean("PCA降维散点图","三维"));
+        options.setXAxis(Arrays.asList(new EchatsOptions3D.XAxisBean[]{new EchatsOptions3D.XAxisBean("value","X")}));
+        options.setYAxis(Arrays.asList(new EchatsOptions3D.YAxisBean[]{new EchatsOptions3D.YAxisBean("value","Y")}));
+        options.setZAxis(Arrays.asList(new EchatsOptions3D.ZAxisBean[]{new EchatsOptions3D.ZAxisBean("value","Z")}));
+        options.setGrid3D(Arrays.asList(new EchatsOptions3D.GridBean[]{new EchatsOptions3D.GridBean(new EchatsOptions3D.GridBean.AxisLineBean(),
+                new EchatsOptions3D.GridBean.AxisPointerBean(),new EchatsOptions3D.GridBean.ViewControllerBean())}));
+
+        List<EchatsOptions3D.SeriesBean> seriesBeans = new ArrayList<EchatsOptions3D.SeriesBean>();
+
+        EchatsOptions3D.SeriesBean seriesBean = new EchatsOptions3D.SeriesBean();
+        seriesBean.setType("scatter3D");
+        List<String> list=new ArrayList<>();
+        list.add("a");
+        list.add("b");
+        list.add("c");
+        seriesBean.setDimentions(list);
+        seriesBean.setEmphasis(new EchatsOptions3D.SeriesBean.EmphasisBean(new EchatsOptions3D.SeriesBean.EmphasisBean.ItemStyleBean()));
+        seriesBean.setItemStyle(new EchatsOptions3D.SeriesBean.ItemStyleBean("#ff0000",1,"rgba(255,255,255,0.8)"));
+        List<List<Double>> nData = new ArrayList<List<Double>>();
+
+        for (int i=0;i<instances.size();i++){
+            Instance instance = res.get(i);
+            nData.add(Arrays.asList(new Double[]{instance.value(0),instance.value(1),instance.value(2)}));
+        }
+
+        seriesBean.setSymbolSize(4);
+        seriesBean.setData(nData);
+        seriesBeans.add(seriesBean);
+        options.setSeries(seriesBeans);
+        return options;
+    }
     public static EchatsOptions resloveRelative(String file) throws Exception {
         String cmd = "python "+Const.RELATIVE_CMD+" path="+file;
+        System.out.println("特征相关性分析");
+        System.out.println(cmd);
         String res = PythonUtils.execPy(cmd);
         Gson gson = new Gson();
         RelativeVo vo = gson.fromJson(res,RelativeVo.class);
         EchatsOptions options = new EchatsOptions();
         options.setTitle(new EchatsOptions.TitleBean("相关性分析","表征特征的重要程度"));
         options.setTooltip(new EchatsOptions.TooltipBean());
-        EchatsOptions.XAxisBean xAxisBean = new EchatsOptions.XAxisBean("value",true,null);
+        EchatsOptions.XAxisBean xAxisBean = new EchatsOptions.XAxisBean("value",true,new EchatsOptions.XAxisBean.AxisLabelBean());
         options.setXAxis(Arrays.asList(xAxisBean));
-        EchatsOptions.YAxisBean yAxisBean = new EchatsOptions.YAxisBean("category",true,null);
+        EchatsOptions.YAxisBean yAxisBean = new EchatsOptions.YAxisBean("category",true,new EchatsOptions.YAxisBean.AxisLabelBeanX());
         yAxisBean.setData(vo.getAttributeName());
         options.setYAxis(Arrays.asList(yAxisBean));
         options.setLegend(new EchatsOptions.LegendBean(Arrays.asList("快速特征选择")));
@@ -272,15 +346,17 @@ public class ViewUtils {
     }
     public static EchatsOptions resloveRegRelative(String file) throws Exception {
         String cmd = "python "+Const.REG_RELATIVE_CMD+" path="+file;
+        System.out.println("特征相关性分析");
+        System.out.println(cmd);
         String res = PythonUtils.execPy(cmd);
         Gson gson = new Gson();
         RelativeVo vo = gson.fromJson(res,RelativeVo.class);
         EchatsOptions options = new EchatsOptions();
         options.setTitle(new EchatsOptions.TitleBean("相关性分析","表征特征的重要程度"));
         options.setTooltip(new EchatsOptions.TooltipBean());
-        EchatsOptions.XAxisBean xAxisBean = new EchatsOptions.XAxisBean("value",true,null);
+        EchatsOptions.XAxisBean xAxisBean = new EchatsOptions.XAxisBean("value",true,new EchatsOptions.XAxisBean.AxisLabelBean());
         options.setXAxis(Arrays.asList(xAxisBean));
-        EchatsOptions.YAxisBean yAxisBean = new EchatsOptions.YAxisBean("category",true,null);
+        EchatsOptions.YAxisBean yAxisBean = new EchatsOptions.YAxisBean("category",true,new EchatsOptions.YAxisBean.AxisLabelBeanX());
         yAxisBean.setData(vo.getAttributeName());
         options.setYAxis(Arrays.asList(yAxisBean));
         options.setLegend(new EchatsOptions.LegendBean(Arrays.asList("快速特征选择")));
@@ -303,7 +379,7 @@ public class ViewUtils {
         seriesBean.setName(attributeName);
         seriesBean.setSymbolSize(4);
         seriesBean.setItemStyle(new EchatsOptions.SeriesBean.ItemStyleBean(
-                new EchatsOptions.SeriesBean.ItemStyleBean.NormalBean("#ff0000")));
+                new EchatsOptions.SeriesBean.ItemStyleBean.NormalBean("#00ffff")));
         List<double[]> data = new ArrayList<double[]>();
         Attribute attribute= instances.attribute(attributeName);
         Attribute attribute1= instances.attribute(instances.numAttributes()-1);
@@ -366,3 +442,6 @@ public class ViewUtils {
 }
 
 // 降维 在二维、三维可视化
+
+
+//时间窗 时间序列

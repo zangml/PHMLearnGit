@@ -3,6 +3,7 @@ package com.koala.learn.entity;
 import com.alibaba.fastjson.JSONObject;
 import com.google.gson.JsonObject;
 
+import java.time.format.TextStyle;
 import java.util.List;
 
 public class EchatsOptions {
@@ -65,6 +66,7 @@ public class EchatsOptions {
         public TitleBean(String text, String subtext) {
             this.text = text;
             this.subtext = subtext;
+            this.textStyle=new TextStyleBeanTitle();
         }
 
         /**
@@ -77,15 +79,15 @@ public class EchatsOptions {
         private String text;
         private String subtext;
 
-        private String textStyle;
+        private TextStyleBeanTitle textStyle;
 
-        public String getTextStyle() {
-            return textStyle;
+        public static class TextStyleBeanTitle{
+            String color;
+            public TextStyleBeanTitle(){
+                color="#fcfcfc";
+            }
         }
 
-        public void setTextStyle(String textStyle) {
-            this.textStyle = textStyle;
-        }
 
         public String getText() {
             return text;
@@ -276,13 +278,17 @@ public class EchatsOptions {
 
             private String formatter;
             private boolean show;
-            private String textStyle;
+            private TextStyleBeanX textStyle;
 
             public AxisLabelBean() {
-                JSONObject obj = new JSONObject();
-                obj.put("color","#fff");
-                textStyle = obj.toJSONString();
-                show = true;
+                show =true;
+                textStyle=new TextStyleBeanX();
+            }
+            public static class TextStyleBeanX{
+                private String color;
+                public TextStyleBeanX(){
+                    color="#ffffff";
+                }
             }
 
             public String getFormatter() {
@@ -354,12 +360,16 @@ public class EchatsOptions {
 
             private String formatter;
             private boolean show;
-            private String textStyle;
+            private TextStyleBeanY textStyle;
             public AxisLabelBeanX() {
-                JSONObject obj = new JSONObject();
-                obj.put("color","#fff");
-                textStyle = obj.toJSONString();
-                show = true;
+                show =true;
+                textStyle=new TextStyleBeanY();
+            }
+            public static class TextStyleBeanY{
+                private String color;
+                public TextStyleBeanY(){
+                    color="#ffffff";
+                }
             }
 
             public String getFormatter() {

@@ -18,4 +18,6 @@ public interface FeatureMapper {
     int updateByPrimaryKey(Feature record);
 
     List<Feature> selectAll();
+
+    List<Feature> selectAllPre();
 }

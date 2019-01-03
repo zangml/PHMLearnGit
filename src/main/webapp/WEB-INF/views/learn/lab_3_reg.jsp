@@ -21,7 +21,8 @@
     <script src="http://how2j.cn/study/js/jquery/2.0.0/jquery.min.js"></script>
     <link href="http://how2j.cn/study/css/bootstrap/3.3.6/bootstrap.min.css" rel="stylesheet">
     <script src="http://how2j.cn/study/js/bootstrap/3.3.6/bootstrap.min.js"></script>
-    <script src="http://echarts.baidu.com/dist/echarts.min.js"></script>
+    <script src="https://cdn.bootcss.com/echarts/3.8.5/echarts.min.js"></script>
+    <script src="http://echarts.baidu.com/resource/echarts-gl-latest/dist/echarts-gl.min.js"></script>
     <link href="<%=basePath%>assets/styles/lab_1.css" rel="stylesheet">
     <link rel="stylesheet" href="<%=basePath%>assets/css/style.css">
     <script  src="<%=basePath%>assets/js/index.js"></script>
@@ -62,6 +63,8 @@
                             <ul class="dropdown-menu">
                                 <li><a href="#" onclick="changeType(4,'单一属性预测分析')">单一属性预测分析</a></li>
                                 <li><a href="#" onclick="changeType(5,'特征重要性分析')">特征重要性分析</a></li>
+                                <li><a href="#" onclick="changeType(6,'特征降维二维散点图')">特征降维二维散点图</a></li>
+                                <li><a href="#" onclick="changeType(7,'特征降维三维散点图')">特征降维三维散点图</a></li>
                             </ul>
                         </div><!-- /btn-group -->
                     </div>
@@ -101,18 +104,25 @@
                     ${lab.title}</a>
                     &nbsp&nbsp &nbsp&nbsp &nbsp&nbsp &nbsp&nbsp
                     <hr>
-                    <p style="color: white">1.实验数据</p>
+                   <div class="border1">
+                    <a href="nowhere" style="color: green">&#8730</a>
+                    <a class="a3" ><strong> 1、数据预处理</strong></a>
+                   </div><p></p>
+                   <div class="border1">
+                    <a href="nowhere" style="color: green">&#8730</a>
+                    <a class="a3" ><strong> 2、特征提取</strong></a>
+                   </div><p></p>
+                    <p style="color: white">3.特征可视化</p>
 
-        <c:forEach items="${labviews}" var="item">
-            <p style="color: white">${item.name}:${item.des}</p>
-        </c:forEach>
-        <a href="/learn/lab2/${lab.id}/${instance}" class="button1" style="background-color: white" ><b>下一步</b></a>
-        <button id="submitAttri" onclick="submitAttri()" class="btn btn-primary" style="margin-left: 30px;">提交</button>
-        <p></p>
-                <div class="border1"><a class="a3" href="#nowhere"><strong> 2.时间窗特征提取</strong></a></div>
-                <div class="border1"><a class="a3" href="#nowhere"><strong> 3.算法选择及调参</strong></a></div>
-                <div class="border1"><a class="a3" href="#nowhere"><strong> 4.划分测试集和训练集</strong></a></div>
-                <div class="border1"><a class="a3" href="#nowhere"><strong> 5.查看训练结果</strong></a></div>
+                <c:forEach items="${labviews}" var="item">
+                    <p style="color: white">${item.name}:${item.des}</p>
+                </c:forEach>
+                <a href="/learn/lab4/${lab.id}/${instance}" class="button1" style="background-color: white" ><b>下一步</b></a>
+                <button id="submitAttri" onclick="submitAttri()" class="btn btn-primary" style="margin-left: 30px;">提交</button>
+                <p></p>
+                <div class="border1"><a class="a3" href="#nowhere"><strong> 4.算法选择及调参</strong></a></div>
+                <div class="border1"><a class="a3" href="#nowhere"><strong> 5.划分训练集和测试集</strong></a></div>
+                <div class="border1"><a class="a3" href="#nowhere"><strong> 6.实验结果及分析</strong></a></div>
                 </span>
         </div>
 
@@ -125,7 +135,7 @@
 </body>
 
 <script language="JavaScript">
-    var myChart = echarts.init(document.getElementById('echart'),"dark");
+    var myChart = echarts.init(document.getElementById('echart'),"light");
     var option = {};
     myChart.setOption(option);
     var index = 0;

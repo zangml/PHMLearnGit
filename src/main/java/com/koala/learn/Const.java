@@ -23,4 +23,8 @@ public class Const {
     public static String REG_RELATIVE_CMD ="/usr/local/sk/regRelative.py"; //生成回归模型特征重要性分析的python文件
 
     public static String WAVEDEC_FEATURE ="/usr/local/sk/wavedecFeature.py"; //封装的小波变换python文件
+
+    public static String ONE_CLASS_SVM_FEATURE ="/usr/local/sk/OneClassSVM.py"; //封装的OneClassSVM的python文件用于数据预处理清除异常点
+
+    public static String ISOLATION_FOREST_FEATURE="/usr/local/sk/IsolationForest.py";//封装的IsolationForest的python文件用于数据预处理清除异常点
 }

@@ -1,7 +1,6 @@
 package com.koala.learn.controller;
 
 import com.google.gson.Gson;
-import com.koala.learn.Const;
 import com.koala.learn.component.JedisAdapter;
 import com.koala.learn.dao.DividerMapper;
 import com.koala.learn.dao.LabGroupMapper;
@@ -73,6 +72,9 @@ public class LabDesignController {
     @Autowired
     LabGroupMapper mLabGroupMapper;
 
+    @Autowired
+    JedisAdapter mJedisAdapter;
+
     private static Logger logger = LoggerFactory.getLogger(LabDesignController.class);
 
     @RequestMapping("/design")
@@ -117,59 +119,80 @@ public class LabDesignController {
         return "design/labpage";
     }
 
-
     @RequestMapping("/design/lab/{groupId}")
     public String createLab(@PathVariable("groupId") Integer groupId, @RequestParam("labName") String labName) {
 
         try {
             Lab lab = mLabDesignerService.createLab(groupId, labName);
-            if (lab.getLableType()==1) {
-                return "redirect:/design/" + lab.getId() + "/lab_1";
-            }else{
-                return "redirect:/design/" + lab.getId() + "/lab_1_reg";
-            }
+            return "redirect:/design/" + lab.getId() + "/lab_1";
         } catch (IOException e) {
             e.printStackTrace();
         }
         return "common/error";
-
     }
 
     @RequestMapping("/design/{labId}/lab_1")
-    public String goLab1(@PathVariable("labId") Integer labId, Model model, HttpSession session) throws IOException {
-        Lab lab = mLabMapper.selectByPrimaryKey(new Integer(labId));
-        model.addAttribute("lab", lab);
-        session.setAttribute("lab", lab);
-
-        List<String> attributeList = mLabDesignerService.resolveAttribute(new File(lab.getFile()));
-        model.addAttribute("attributes", attributeList);
-        System.out.println(attributeList.toString());
-        System.out.println(attributeList.size());
+    public String goLab2(@PathVariable("labId") Integer labId, Model model) {
+        List<FeatureVo> voList = mLabDesignerService.selectPreFeature();
+        model.addAttribute("vos", voList);
+        model.addAttribute("labId", labId);
         return "design/lab_1";
     }
-    @RequestMapping("/design/{labId}/lab_1_reg")
-    public String goLab1Reg(@PathVariable("labId") Integer labId, Model model, HttpSession session) throws IOException {
-        Lab lab = mLabMapper.selectByPrimaryKey(new Integer(labId));
-        model.addAttribute("lab", lab);
-        session.setAttribute("lab", lab);
-
-        List<String> attributeList = mLabDesignerService.resolveAttribute(new File(lab.getFile()));
-        model.addAttribute("attributes", attributeList);
-        System.out.println(attributeList.toString());
-        System.out.println(attributeList.size());
-        return "design/lab_1_reg";
-    }
-
     @RequestMapping("/design/{labId}/lab_2")
-    public String goLab2(@PathVariable("labId") Integer labId, Model model) {
+    public String goLab3(@PathVariable("labId") Integer labId, Model model) {
         List<FeatureVo> voList = mLabDesignerService.selectAllFeature();
         model.addAttribute("vos", voList);
         model.addAttribute("labId", labId);
         return "design/lab_2";
     }
-
     @RequestMapping("/design/{labId}/lab_3")
-    public String goLab3(String des, Model model, HttpSession session, @PathVariable("labId") Integer labId) {
+    public String goLab1(@PathVariable("labId") Integer labId, Model model, HttpSession session) throws IOException {
+        Lab lab = mLabMapper.selectByPrimaryKey(new Integer(labId));
+        model.addAttribute("lab", lab);
+        session.setAttribute("lab", lab);
+
+        String fileKey = RedisKeyUtil.getFileKey(lab.getId());
+        File input = null;
+        if (mJedisAdapter.llen(fileKey) >0){
+            input = new File(mJedisAdapter.lrange(fileKey,0,1).get(0));
+        }else {
+            input = new File(lab.getFile().replace("csv","arff"));
+        }
+        List<String> attributeList = mLabDesignerService.resolveAttribute(input);
+
+        model.addAttribute("attributes", attributeList);
+        System.out.println(attributeList.toString());
+        System.out.println(attributeList.size());
+        if(lab.getLableType()==1) {
+            return "design/lab_3";
+        }else{
+            return "design/lab_3_reg";
+        }
+    }
+    @RequestMapping("/design/{labId}/lab_3_reg")
+    public String goLab1Reg(@PathVariable("labId") Integer labId, Model model, HttpSession session) throws IOException {
+        Lab lab = mLabMapper.selectByPrimaryKey(new Integer(labId));
+        model.addAttribute("lab", lab);
+        session.setAttribute("lab", lab);
+
+        String fileKey = RedisKeyUtil.getFileKey(lab.getId());
+        File input = null;
+        if (mJedisAdapter.llen(fileKey) >0){
+            input = new File(mJedisAdapter.lrange(fileKey,0,1).get(0));
+        }else {
+            input = new File(lab.getFile().replace("csv","arff"));
+        }
+        List<String> attributeList = mLabDesignerService.resolveAttribute(input);
+        model.addAttribute("attributes", attributeList);
+        System.out.println(attributeList.toString());
+        System.out.println(attributeList.size());
+        return "design/lab_3_reg";
+    }
+
+
+
+    @RequestMapping("/design/{labId}/lab_4")
+    public String goLab4(String des, Model model, HttpSession session, @PathVariable("labId") Integer labId) {
         Lab lab = mLabMapper.selectByPrimaryKey(labId);
         if (StringUtils.isNotBlank(des)) {
             String key = RedisKeyUtil.getFeatureDesKey(lab.getId());
@@ -193,11 +216,11 @@ public class LabDesignController {
 
         model.addAttribute("lab", lab);
         model.addAttribute("selectedClassifiers", mLabService.getSelectedClassifier(labId));
-        return "design/lab_3";
+        return "design/lab_4";
     }
 
-    @RequestMapping("/design/{labId}/lab_4")
-    public String goLab4(String des, HttpSession session, Model model, @PathVariable("labId") Integer labId) {
+    @RequestMapping("/design/{labId}/lab_5")
+    public String goLab5(String des, HttpSession session, Model model, @PathVariable("labId") Integer labId) {
         Lab lab = mLabMapper.selectByPrimaryKey(labId);
         if (StringUtils.isNotBlank(des)) {
             String key = RedisKeyUtil.getClassifierDesKey(lab.getId());
@@ -206,11 +229,11 @@ public class LabDesignController {
         List<Divider> dividers = mDividerMapper.selectAll();
         model.addAttribute("dividers", dividers);
         model.addAttribute("lab", lab);
-        return "design/lab_4";
+        return "design/lab_5";
     }
 
-    @RequestMapping("/design/{labId}/lab_5")
-    public String goLab5(String des, HttpSession session, Model model, @PathVariable("labId") Integer labId) throws IOException {
+    @RequestMapping("/design/{labId}/lab_6")
+    public String goLab6(String des, HttpSession session, Model model, @PathVariable("labId") Integer labId) throws IOException {
         Lab lab = mLabMapper.selectByPrimaryKey(labId);
         model.addAttribute("lab", lab);
         if (StringUtils.isNotBlank(des)) {
@@ -308,7 +331,7 @@ public class LabDesignController {
         model.addAttribute("classNames", classifierNameList);
         lab.setPublish(1);
         mLabMapper.updateByPrimaryKeySelective(lab);
-        return "design/lab_5";
+        return "design/lab_6";
     }
 
     @RequestMapping("/design/upload/classifier")

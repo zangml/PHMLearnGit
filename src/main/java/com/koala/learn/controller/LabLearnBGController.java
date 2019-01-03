@@ -67,7 +67,7 @@ public class LabLearnBGController {
                                      @PathVariable("labId") Integer labId,
                                      @PathVariable("featureId") Integer featureId,
                                      @PathVariable("instance") Integer instanceId,
-                                     HttpSession session){
+                                     HttpSession session) throws Exception {
         Lab lab = mLabMapper.selectByPrimaryKey(labId);
         Feature feature = mFeatureMapper.selectByPrimaryKey(featureId);
         LabInstance instance = mLabInstanceMapper.selectByPrimaryKey(instanceId);

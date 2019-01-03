@@ -14,8 +14,6 @@
     <script src="http://how2j.cn/study/js/jquery/2.0.0/jquery.min.js"></script>
     <link href="http://how2j.cn/study/css/bootstrap/3.3.6/bootstrap.min.css" rel="stylesheet">
     <script src="http://how2j.cn/study/js/bootstrap/3.3.6/bootstrap.min.js"></script>
-    <script  src="<%=basePath%>assets/js/index.js"></script>
-    <link rel="stylesheet" href="<%=basePath%>assets/css/style.css">
     <title>${lab.title}</title>
 </head>
 <style>
@@ -28,6 +26,7 @@
     div.categoryWithCarousel{
         width: 100%;
         position:relative;
+        background:rgb(29,31,32);
     }
     div.categoryWithCarousel div.headbar{
         background-color: rgb(48,54,69);
@@ -132,7 +131,7 @@
     .divcss5_left{
         margin-left: 0px;
         width:65%;
-        height: 1500px;
+        height: 900px;
         border:0px solid #00F;
         /*overflow: scroll;*/
         overflow-x: auto;
@@ -144,7 +143,6 @@
     .divcss5_right{
         /* margin-left:700px; */
         width:35%;
-        height: 1500px;
         border:0px solid rgb(39,41,42);
         /* overflow: scroll; */
         padding:20px 10px 20px 10px;
@@ -205,7 +203,7 @@
     }
 </style>
 <body>
-<div id="bg" class="categoryWithCarousel">
+<div class="categoryWithCarousel">
     <div class="headbar"  >
         <div class="head ">
             <!--<span class="glyphicon glyphicon-th-list" style="margin-left:10px"></span> -->
@@ -225,71 +223,73 @@
         </div>
     </div>
 
-    <div class="divcss5" style="position: relative;">
-        <div class="divcss5_left"  >
-            <div class="container">
-                <div class="panel col-md-3" style="margin-left: 5px">
+    <div class="row" style="margin-left: 100px;margin-top: 50px;">
+        <label style="color: #fff;">已选择的模型：</label>
+        <c:forEach var="selected" items="${selectedClassifiers}">
+            <span title="${selected.des}" class="btn btn-danger">${selected.name}</span>
+        </c:forEach>
+    </div>
+    <div class="container" style="width: 100%">
+        <div class="col-md-8" style="padding-top: 20px">
+            <c:forEach items="${classifierList}" var="classifier">
+                <div class="panel col-md-4">
                     <div class="panel-primary panel-heading">
-                        <p align="center">${divider.name}</p>
+                        <p align="center">${classifier.name}</p>
                     </div>
                     <div class="panel-body">
-                        <form id="random">
-                            <div class="input-group">
-                                <span class="input-group-addon">${divider.label}</span>
-                                <input type="text" class="form-control" name="radio" placeholder=" ">
-                            </div>
-                            <input type="hidden" name="type" value="${divider.type}">
-                            <input type="hidden" name="dividerId" value="${divider.id}">
+                        <form id="classifier${classifier.id}">
+                            <c:forEach items="${classifier.params}" var="cparam">
+                                <div class="input-group">
+                                    <span class="input-group-addon" title="${cparam.paramDes}">${cparam.paramDes}</span>
+                                    <input type="text" class="form-control" placeholder="" name="${cparam.paramName}"
+                                           value="${cparam.defaultValue}">
+                                    <input type="hidden" value="${classifier.path}" name="classifier" />
+                                </div>
+                            </c:forEach>
                         </form>
-                        <button data-toggle="modal" data-target="#ajaxloader2" data-backdrop="static" onclick="setClassify('random')" class="btn btn-primary pull-right">提交</button>
+                        <button onclick="setClassify(${classifier.id})" class="btn btn-primary pull-right">提交</button>
                     </div>
                 </div>
-            </div>
+            </c:forEach>
         </div>
-
-        <div class="divcss5_right"  >
-    <span>
-                <a id="a2" href="#nowhere">
-
-                    ${lab.title}</a>
+        <div class="col-md-4">
+                 <span>
+                <h3 id="a2">
+                    ${lab.title}</h3>
                     &nbsp&nbsp &nbsp&nbsp &nbsp&nbsp &nbsp&nbsp
                     <hr>
                   <div class="border1">
                     <a href="nowhere" style="color: green">&#8730</a>
-                    <a class="a3"><strong> 1、实验数据</strong></a>
+                    <a class="a3"><strong> 1、数据预处理</strong></a>
                   </div><p></p>
                   <div class="border1">
                     <a href="nowhere" style="color: green">&#8730</a>
-                    <a class="a3" ><strong> 2、时间窗特征提取</strong></a>
+                    <a class="a3" ><strong> 2、特征提取</strong></a>
                   </div><p></p>
-                  <div class="border1">
+                     <div class="border1">
                     <a href="nowhere" style="color: green">&#8730</a>
-                    <a class="a3" ><strong> 3、算法选择及调优</strong></a>
+                    <a class="a3" ><strong> 3、特征可视化</strong></a>
                   </div><p></p>
-                    <p style="color: white">4、划分训练集和测试集</p>
-        <p style="color: white">${des}</p>
-          <form action="/learn/lab5/${lab.id}/${instance}" method="post">
-            <button data-toggle="modal" data-target="#ajaxloader2" data-backdrop="static" id="next" class="button1" >已完成，下一步</button> </br>
+                    <p style="color: white">4.算法选择及调优</p>
+                    <p style="color: white">${des}</p>
+        <a href="/learn/lab5/${lab.id}/${instance}" class="button1" style="background-color: white" ><b>已完成，下一步</b></a> </br>
 
-        </form>
-        <p></p>
-                <div class="border1"><a class="a3" href="#nowhere"><strong> 5.查看训练结果</strong></a></div>
+                     </form>
+                     </br>
+                     <p></p>
+                 <div class="border1"><a class="a3" href="#nowhere"><strong> 5.划分测试集和训练集</strong></a></div>
+                <div class="border1"><a class="a3" href="#nowhere"><strong> 6.查看训练结果</strong></a></div>
                 </span>
-
         </div>
     </div>
 </div>
-<div id="ajaxloader2" style="display: none;margin-top: 170px;">
-    <div class="outer"></div>
-    <div class="inner"></div>
-</div>
 </body>
 <script language="JavaScript">
-    function setClassify(name) {
-        var url = "/learn/divider/${lab.id}/${instance}";
-        var formId = "#"+name;
+    function setClassify(classifierId) {
+        var url = "/learn/${lab.id}/${instance}/classifier/"+classifierId;
+        var formId = "#classifier"+classifierId;
         console.log(url)
-        console.log(name)
+        console.log(formId)
         $.ajax({
             type:"POST",
             url:url,
@@ -297,23 +297,18 @@
             data:$(formId).serialize(),
             success:function (data) {
                 console.log(data)
-                $('#ajaxloader2').modal('hide')
                 if(data.status==0){
-                    alert("训练集和测试集划分成功")
-                }else {
-                    alert(data.msg)
+                    alert("算法选择成功")
+                    location.reload()
                 }
                 console.log(data)
             },
             error:function (e) {
-                $('#ajaxloader2').modal('hide')
                 console.log(e)
                 alert("error"+e)
             }
         })
     }
-
 </script>
-
 
 </html>

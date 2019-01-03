@@ -8,6 +8,7 @@ import com.koala.learn.dao.LabMapper;
 import com.koala.learn.dao.FeatureMapper;
 import com.koala.learn.entity.*;
 import com.koala.learn.service.LabDesignBGService;
+import com.koala.learn.utils.CSVUtils;
 import com.koala.learn.utils.RedisKeyUtil;
 import com.koala.learn.utils.WekaUtils;
 import com.koala.learn.utils.treat.ViewUtils;
@@ -40,6 +41,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import org.springframework.web.multipart.MultipartFile;
+import weka.classifiers.evaluation.output.prediction.CSV;
 import weka.core.Instances;
 
 /**
@@ -101,8 +103,16 @@ public class LabDesignBGController {
     @ResponseBody
     public String getAttributeView(@PathVariable("id") final int id, @RequestParam final Map<String,Object> param, @PathVariable("type") final Integer type) throws Exception {
         Lab lab = mLabMapper.selectByPrimaryKey(id);
-        System.out.println(lab.getFile());
-        Instances instances = WekaUtils.readFromFile(lab.getFile());
+        String fileKey = RedisKeyUtil.getFileKey(lab.getId());
+        File input = null;
+        if (mJedisAdapter.llen(fileKey) >0){
+            input = new File(mJedisAdapter.lrange(fileKey,0,1).get(0));
+        }else {
+            input = new File(lab.getFile().replace("csv","arff"));
+        }
+
+        Instances instances = WekaUtils.readFromFile(input.getAbsolutePath());
+
         String value = mJedisAdapter.get(RedisKeyUtil.getAttributeKey(param.toString(),type,id));
         if ( value != null){
             return value;
@@ -112,14 +122,27 @@ public class LabDesignBGController {
             options = ViewUtils.reslovePCA(instances);
         }else if (type == ViewUtils.VIEW_ATTRI){
             options = ViewUtils.resloveAttribute(instances,param.get("attribute1").toString());
-        }else if (type == ViewUtils.VIEW_MULATTRI){
+        }else if(type ==ViewUtils.VIEW_REG_PCA2){
+            options = ViewUtils.resloveRegPCA(instances);
+        }else if(type ==ViewUtils.VIEW_REG_PCA3){
+            EchatsOptions3D options3D =null;
+            options3D=ViewUtils.resloveRegPCA3D(instances);
+            String key = RedisKeyUtil.getAttributeKey(param.toString(),type,id);
+            Gson gson = new Gson();
+            String json = gson.toJson(options3D);
+            mJedisAdapter.set(key,json);
+            return json;
+        }
+        else if (type == ViewUtils.VIEW_MULATTRI){
             options = ViewUtils.resloveMulAttribute(instances,param);
         }else if (type == ViewUtils.VIEW_RELATIVE){
-            options = ViewUtils.resloveRelative(lab.getFile());
-        }else if (type == ViewUtils.VIEW_REG_ATTRI){    //update
+            input =WekaUtils.arff2csv(input);
+            options = ViewUtils.resloveRelative(input.getAbsolutePath());
+        }else if (type == ViewUtils.VIEW_REG_ATTRI){
             options = ViewUtils.resloveRegAttribute(instances,param.get("attribute1").toString());
         }else if (type == ViewUtils.VIEW_REG_RELATIVE){
-            options = ViewUtils.resloveRegRelative(lab.getFile());
+            input =WekaUtils.arff2csv(input);
+            options = ViewUtils.resloveRegRelative(input.getAbsolutePath());
         }
 
 
@@ -151,6 +174,27 @@ public class LabDesignBGController {
     }
 
 
+    @RequestMapping(path = "/design/{labId}/part2/pre/add/{featureId}")
+    @ResponseBody
+    public ServerResponse addPre(@RequestParam Map<String,String> param,
+                                     @PathVariable("labId") Integer labId,
+                                     @PathVariable("featureId") Integer featureId,
+                                     HttpSession session) throws Exception {
+
+        Lab lab = mLabMapper.selectByPrimaryKey(labId);
+        System.out.println(featureId);
+        Feature feature = mFeatureMapper.selectByPrimaryKey(featureId);
+        String fileKey = RedisKeyUtil.getFileKey(labId);
+
+        File out = mDesignBGService.addFeature(session,feature,param,lab);
+        mDesignBGService.savePre(lab,feature,param);
+
+        mJedisAdapter.lpush(fileKey,out.getAbsolutePath());
+
+        System.out.println(out.getName());
+        return ServerResponse.createBySuccess(out.getName());
+    }
+
 
     @RequestMapping(path = "/design/{labId}/part2/feature/add/{featureId}")
     @ResponseBody
@@ -163,7 +207,7 @@ public class LabDesignBGController {
         Feature feature = mFeatureMapper.selectByPrimaryKey(featureId);
         String fileKey = RedisKeyUtil.getFileKey(labId);
 
-        File out = mDesignBGService.addFeature(session,feature,param, lab);
+        File out = mDesignBGService.addFeature(session,feature,param,lab);
         mDesignBGService.saveFeature(lab,feature,param);
 
         mJedisAdapter.lpush(fileKey,out.getAbsolutePath());

@@ -14,8 +14,7 @@
     <script src="http://how2j.cn/study/js/jquery/2.0.0/jquery.min.js"></script>
     <link href="http://how2j.cn/study/css/bootstrap/3.3.6/bootstrap.min.css" rel="stylesheet">
     <script src="http://how2j.cn/study/js/bootstrap/3.3.6/bootstrap.min.js"></script>
-    <script  src="<%=basePath%>assets/js/index.js"></script>
-    <link rel="stylesheet" href="<%=basePath%>assets/css/style.css">
+    <script src="http://echarts.baidu.com/dist/echarts.min.js"></script>
     <title>${lab.title}</title>
 </head>
 <style>
@@ -227,26 +226,31 @@
 
     <div class="divcss5" style="position: relative;">
         <div class="divcss5_left"  >
-            <div class="container">
-                <c:forEach items="${dividers}" var="divider">
-                    <div class="panel col-md-3" style="margin-left: 5px">
-                        <div class="panel-primary panel-heading">
-                            <p align="center">${divider.name}</p>
-                        </div>
-                        <div class="panel-body">
-                            <form id="divider${divider.id}">
-                                <div class="input-group">
-                                    <span class="input-group-addon">${divider.label}</span>
-                                    <input type="text" class="form-control" name="radio" placeholder=" ">
-                                </div>
-                                <input type="hidden" name="type" value="${divider.type}">
-                                <input type="hidden" name="dividerId" value="${divider.id}">
-                            </form>
-                            <button data-toggle="modal" data-target="#ajaxloader2" data-backdrop="static"  onclick="setClassify(${divider.id})" class="btn btn-primary pull-right">提交</button>
-                        </div>
-                    </div>
+            <h2 style="color: white">实验结果</h2>
+            <table class="table">
+                <tbody>
+                <c:forEach items="${res}" var="line">
+                    <tr style="color: white">
+                        <c:forEach items="${line}" var="item">
+                            <th style="color: white">${item}</th>
+                        </c:forEach>
+                    </tr>
                 </c:forEach>
+                </tbody>
+            </table>
+            <br>
+            <div style="margin-left: 100px;">
+                <div class="input-group-btn">
+                    <button id="btnType" type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">${classNames.get(0)} <span class="caret"></span></button>
+                    <ul class="dropdown-menu">
+                        <c:forEach items="${classNames}" var="name" varStatus="status">
+                            <li onclick="changeType(${status.index},'${name}')">${name}</li>
+                        </c:forEach>
+                    </ul>
+                </div><!-- /btn-group -->
             </div>
+            <br>
+            <div id="echart" style="width: 700px;height: 600px;margin-top: 20px;margin-left: 30px;"></div>
         </div>
 
         <div class="divcss5_right"  >
@@ -254,7 +258,9 @@
                 <a id="a2" href="#nowhere">
 
                     ${lab.title}</a>
-                    &nbsp&nbsp &nbsp&nbsp &nbsp&nbsp &nbsp&nbsp
+                    &nbsp&nbsp &nbsp&nbsp
+                   <a href="/labs/group/${groupId}/${groupInstanceId}" class="button">查看</a>
+
                     <hr>
                   <div class="border1">
                     <a href="nowhere" style="color: green">&#8730</a>
@@ -268,56 +274,34 @@
                     <a href="nowhere" style="color: green">&#8730</a>
                     <a class="a3" ><strong> 3、特征可视化</strong></a>
                   </div><p></p>
-                  <div class="border1">
+                   <div class="border1">
                     <a href="nowhere" style="color: green">&#8730</a>
                     <a class="a3" ><strong> 4、算法选择及调优</strong></a>
                   </div><p></p>
-                    <p style="color: white">5、划分训练集和测试集</p>
-        <form action="/design/${lab.id}/lab_6" method="post">
-            <textarea  id="divideText" rows="8" name="des" class="form-control" placeholder="划分训练集和测试集的依据"></textarea>
-
-            <button data-toggle="modal" data-target="#ajaxloader2" data-backdrop="static" id="next" class="button1" >已完成，下一步</button> </br>
-
-        </form>
+                  <div class="border1">
+                    <a href="nowhere" style="color: green">&#8730</a>
+                    <a class="a3" ><strong> 5、划分测试数据和训练数据</strong></a>
+                  </div><p></p>
         <p></p>
-                <div class="border1"><a class="a3" href="#nowhere"><strong> 6.查看训练结果</strong></a></div>
+                 <p style="color: white">6、查看训练结果</p>
                 </span>
 
         </div>
     </div>
 </div>
-<div id="ajaxloader2" class="modal" style="display: none;margin-top: 170px;">
-    <div class="outer"></div>
-    <div class="inner"></div>
-</div>
 </body>
+
 <script language="JavaScript">
-    function setClassify(name) {
-        var url = "/design/${lab.id}/divider/";
-        var formId = "#divider"+name;
-        console.log(url)
-        console.log(name)
-        $.ajax({
-            type:"POST",
-            url:url,
-            async:true,
-            data:$(formId).serialize(),
-            success:function (data) {
-                $('#ajaxloader2').modal('hide')
-                console.log(data)
-                if(data.status==0){
-                    alert("训练集和测试集划分成功")
-                }
-                console.log(data)
-            },
-            error:function (e) {
-                $('#ajaxloader2').modal('hide')
-                console.log(e)
-                alert("error"+e)
-            }
-        })
+
+    var myChart = echarts.init(document.getElementById('echart'),"dark");
+    var option = ${options}[0];
+    console.log(option)
+    myChart.setOption(option);
+
+    function changeType(index,name) {
+        $("#btnType").text(name);
+        option = ${options}[index];
+        myChart.setOption(option);
     }
 </script>
-
-
 </html>

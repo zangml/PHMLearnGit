@@ -14,202 +14,13 @@
     <script src="http://how2j.cn/study/js/jquery/2.0.0/jquery.min.js"></script>
     <link href="http://how2j.cn/study/css/bootstrap/3.3.6/bootstrap.min.css" rel="stylesheet">
     <script src="http://how2j.cn/study/js/bootstrap/3.3.6/bootstrap.min.js"></script>
-    <script src="http://jq22.qiniudn.com/masonry-docs.min.js"></script>
+    <script src="https://cdn.bootcss.com/echarts/3.8.5/echarts.min.js"></script>
+    <script src="http://echarts.baidu.com/resource/echarts-gl-latest/dist/echarts-gl.min.js"></script>
+    <script  src="<%=basePath%>assets/js/index.js"></script>
+    <link rel="stylesheet" href="<%=basePath%>assets/css/style.css">
+    <link href="<%=basePath%>assets/styles/lab_1.css" rel="stylesheet">
     <title>${lab.title}</title>
 </head>
-<style>
-    .container-fluid{
-        padding-top: 20px;
-        padding-right: 0px;
-        padding-left: 0px;
-    }
-
-    hr{
-        width: 100%;
-        height: 1px;
-        color:rgb(135,135,135);
-        border-top:1px solid #555555;
-    }
-    div.categoryWithCarousel{
-        width: 100%;
-        position:relative;
-        background:rgb(29,31,32);
-    }
-    div.categoryWithCarousel div.headbar{
-        background-color: rgb(48,54,69);
-        height: 60px;
-        width: 100%;
-    }
-    div.categoryWithCarousel div.head{
-        width: 250px;
-        background-color: rgb(48,54,69);
-        height: 60px;
-        line-height: 60px;
-        font-size: 25px;
-        font-weight: bold;
-        margin-left: 00px;
-        margin-right: 30px;
-        display: inline-block;
-    }
-    div.categoryWithCarousel div.head a{
-        color: rgb(113,177,194);
-    }
-    div.categoryWithCarousel div.rightMenu{
-        display: inline-block;
-    }
-    div.categoryWithCarousel div.rightMenu a{
-        font-size: 16px;
-        color: rgb(163,166,174);
-        text-decoration:none;
-    }
-    div.categoryWithCarousel div.rightMenu a:hover{
-        font-size: 16px;
-        color: rgb(163,166,174);
-        text-decoration:none;
-        color: white;
-    }
-
-    #a1{
-        font-size: 16px;
-        color: white;
-        text-decoration:none;
-    }
-    #a2{
-        font-size: 16px;
-        color: white;
-        text-decoration:none;
-        text-align: center;
-    }
-    a.a3{
-        font-size: 15px;
-        color: rgb(59,60,61);
-        text-decoration:none;
-        text-align: center;
-    }
-    div.border1{
-        padding-bottom: 3px;
-        border-bottom: 1px solid rgb(59,60,61);
-        width: 90%;
-    }
-    div.categoryWithCarousel div.rightMenu span{
-        line-height: 60px;
-        margin: 0px 20px 0px 20px;
-    }
-    div.categoryWithCarousel div.rightMenu img{
-        height: 30px;
-    }
-    div.carousel-of-product{
-        height: 510px;
-        width:1024px;
-        margin:0px auto;
-    }
-    img.carouselImage{
-        height: 510px !important;
-    }
-    div.carouselBackgroundDiv{
-        width:100%;
-        height:510px;
-        background-color:#E8E8E8;
-        position:absolute;
-        top:36px;
-        z-index:-1;
-    }
-    #left{
-        background: rgb(245,245,245);
-        width: 300px;
-        height: 900px;
-        float: left;
-        position: absolute;
-        overflow: auto;
-        top: 60px;
-
-    }
-    #right{
-        background: yellow;
-        width: 1000px;
-        height: 500px;
-        float: right;
-        position: absolute;
-        overflow: auto;
-        top: 60px;
-
-    }
-    .divcss5{ width:100%;padding:0px;border:0px solid #F00}
-    .divcss5_left{
-        margin-left: 0px;
-        width:65%;
-        height: 900px;
-        border:0px solid #00F;
-        /*overflow: scroll;*/
-        overflow-x: auto;
-        background:rgb(29,31,32);
-        display: block;
-        padding: 10px 20px 10px 20px;
-        float: left;
-    }
-    .divcss5_right{
-        /* margin-left:700px; */
-        width:35%;
-        height: 900px;
-        border:0px solid rgb(39,41,42);
-        /* overflow: scroll; */
-        padding:20px 10px 20px 10px;
-        background:rgb(39,41,42);
-        display: block;
-        float: left;
-    }
-    .clear{ clear:both}
-
-    .button {
-        background-color: #4CAF50;
-        border: none;
-        color: white;
-        padding: 5px 2px;
-        text-align: center;
-        text-decoration: none;
-        display: inline-block;
-        font-size: 16px;
-        margin: 4px 3px;
-        cursor: pointer;
-        border-radius: 4px;
-        float: right;
-    }
-    .button1{
-        background-color: white;
-        border: none;
-        color: black;
-        padding: 5px 2px;
-        text-align: center;
-        text-decoration: none;
-        display: inline-block;
-        font-size: 16px;
-        margin: 4px 3px;
-        cursor: pointer;
-        border-radius: 4px;
-    }
-    .text1 {
-        width:200px;     /* 这里是输入框的长度 */
-        height:40px;   /* 这里是输入框的宽度 */
-        position:relative;   /* 这里规定输入框的定位类型 */
-        top:10px;   /* 这里规定输入框于原位置向下偏移100px  */
-        left:0px;    /*  这里规定输入框于原位置向右偏移300px  */
-        background:rgb(29,31,32);
-        border: 0px;
-    }
-    .text2 {
-        width:200px;     /* 这里是输入框的长度 */
-        height:40px;   /* 这里是输入框的宽度 */
-        position:relative;   /* 这里规定输入框的定位类型 */
-        top:0px;   /* 这里规定输入框于原位置向下偏移100px  */
-        left:0px;    /*  这里规定输入框于原位置向右偏移300px  */
-        background:rgb(39,41,42);
-        border: 0px;
-    }
-    table,th,td
-    {
-        border:1px solid white;
-    }
-</style>
 <body>
 <div class="categoryWithCarousel">
     <div class="headbar"  >
@@ -231,99 +42,237 @@
         </div>
     </div>
 
-    <div class="row" style="margin-left: 100px;margin-top: 50px;">
-        <label style="color: #fff;">已选择的模型：</label>
-        <c:forEach var="selected" items="${selectedClassifiers}">
-            <span title="${selected.des}" class="btn btn-danger">${selected.name}</span>
-        </c:forEach>
-    </div>
-    <div class="container" style="width: 100%">
-        <div class="col-md-8">
-            <div id="masonry" class="container-fluid" >
-                <c:forEach items="${classifierList}" var="classifier">
-                    <div class="panel col-md-4">
-                        <div class="panel-primary panel-heading">
-                            <p align="center">${classifier.name}</p>
-                        </div>
-                        <div class="panel-body">
-                            <form id="classifier${classifier.id}">
-                                <c:forEach items="${classifier.params}" var="cparam">
-                                    <div class="input-group">
-                                        <span class="input-group-addon" title="${cparam.paramDes}">${cparam.paramDes}</span>
-                                        <input type="text" class="form-control" placeholder="" name="${cparam.paramName}"
-                                               value="${cparam.defaultValue}">
-                                        <input type="hidden" value="${classifier.path}" name="classifier" />
-                                    </div>
+    <div class="divcss5" style="position: relative;">
+        <div class="divcss5_left" style="position: ab;"  >
+            <div class="container">
+                <div class="row" style="margin-top: 30px;">
+
+                    <div class="col-sm-3" style="margin-left: 100px;">
+                        <div class="input-group-btn">
+                            <button id="btnType" type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">实验数据降维散点图<span class="caret"></span></button>
+                            <ul class="dropdown-menu">
+                                <li><a href="#" onclick="changeType(0,'数据降维二维散点图')">数据降维二维散点图</a></li>
+                                <li><a href="#" onclick="changeType(1,'单一属性类别分析')">单一属性类别分析</a></li>
+                                <li><a href="#" onclick="changeType(2,'二维属性类别分析')">二维属性类别分析</a></li>
+                                <li><a href="#" onclick="changeType(3,'特征相关性分析')">特征相关性分析</a></li>
+                                <li><a href="#" onclick="changeType(7,'特征降维三维散点图')">特征降维三维散点图</a></li>
+                            </ul>
+                        </div><!-- /btn-group -->
+                    </div>
+
+                    <div class="col-sm-2" id="attribute1">
+                        <div class="input-group-btn">
+                            <button id="btnAttribute1" type="button" class="btn btn-default dropdown-toggle"   data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">${attributes[0]} <span class="caret"></span></button>
+                            <ul class="dropdown-menu">
+                                <c:forEach items="${attributes}" var="name">
+                                    <li><a href="#" onclick="changeAttribute1(this)">${name}</a></li>
                                 </c:forEach>
-                            </form>
-                            <button onclick="setClassify(${classifier.id})" class="btn btn-primary pull-right">提交</button>
+                            </ul>
                         </div>
                     </div>
-                </c:forEach>
+
+                    <div class="col-sm-2" id="attribute2">
+                        <div class="input-group-btn" >
+                            <button id="btnAttribute2" type="button" class="btn btn-default dropdown-toggle"   data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">${attributes[0]} <span class="caret"></span></button>
+                            <ul class="dropdown-menu">
+                                <c:forEach items="${attributes}" var="name">
+                                    <li><a href="#" onclick="changeAttribute2(this)">${name}</a></li>
+                                </c:forEach>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <button id="submit" data-toggle="modal" data-target="#ajaxloader2" data-backdrop="static" onclick="submit()" class="btn btn-primary">查看</button>
+                    <button class="btn btn-success" data-toggle="modal" data-target="#myModal" id="addBtn">添加</button>
+                    <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+                        <div class="modal-dialog">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+                                    </button>
+                                    <h4 class="modal-title" id="myModalLabel">
+                                        添加用户可见的可视化项
+                                    </h4>
+                                </div>
+                                <div class="modal-body">
+                                    <div id="wrapper" class="row" style="margin-left: 8px;margin-right: 8px">
+                                        <div id="typeSelector"class="input-group-btn">
+                                            <button  id="btnType1" type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">实验数据降维散点图 <span class="caret"></span></button>
+                                            <ul class="dropdown-menu">
+                                                <li><a href="#" onclick="changeSelectType(0,'实验数据降维散点图')">实验数据降维散点图</a></li>
+                                                <li><a href="#" onclick="changeSelectType(1,'单一属性类别分析')">单一属性类别分析</a></li>
+                                                <li><a href="#" onclick="changeSelectType(2,'二维属性类别分析')">二维属性类别分析</a></li>
+                                                <li><a href="#" onclick="changeSelectType(3,'特征相关性分析')">特征相关性分析</a></li>
+
+                                            </ul>
+                                        </div><!-- /btn-group -->
+                                    </div>
+                                    <hr />
+                                    <textarea  id="modalText" rows="8" name="des" class="form-control" placeholder="请输入您的实验数据特征观察结果"></textarea>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-default" data-dismiss="modal">关闭
+                                    </button>
+                                    <button id="btnSubmit" type="button" class="btn btn-primary">
+                                        提交更改
+                                    </button>
+                                </div>
+                            </div><!-- /.modal-content -->
+                        </div><!-- /.modal -->
+                    </div>
+
+                </div>
+                <div id="echart" style="width: 900px;height: 700px;margin-top: 20px"></div>
+
+
             </div>
-
         </div>
-        <div class="col-md-4">
-              <span>
-                <h3 id="a2">
-                    ${lab.title}</h3>
-                    &nbsp&nbsp &nbsp&nbsp &nbsp&nbsp &nbsp&nbsp
 
+        <div class="divcss5_right" style="position: a;">
+        <span>
+                <a id="a2">
+
+                    ${lab.title}</a>
+                    &nbsp&nbsp &nbsp&nbsp &nbsp&nbsp &nbsp&nbsp
                     <hr>
-                  <div class="border1">
+                    <div class="border1">
                     <a href="nowhere" style="color: green">&#8730</a>
                     <a class="a3"><strong> 1、实验数据</strong></a>
                   </div><p></p>
                   <div class="border1">
                     <a href="nowhere" style="color: green">&#8730</a>
-                    <a class="a3" ><strong> 2、时间窗特征提取</strong></a>
+                    <a class="a3" ><strong> 2、数据预处理</strong></a>
                   </div><p></p>
-                    <p style="color: white">3.算法选择及调优</p>
-                    <form action="/design/${lab.id}/lab_4" method="post">
-            <textarea  id="classifierText" rows="8" name="des" class="form-control" placeholder="请输入您的实验数据特征观察结果"></textarea>
+                    <p style="color: white">3.特征可视化</p>
 
-            <button id="next" class="button1" >已完成，下一步</button> </br>
-
-        </form>
-                  </br>
-                  <p></p>
-                 <div class="border1"><a class="a3" href="#nowhere"><strong> 4.划分测试集和训练集</strong></a></div>
-                <div class="border1"><a class="a3" href="#nowhere"><strong> 5.查看训练结果</strong></a></div>
-                </span>
-
+                    <p style="color: white">点击添加，添加用户可见的可视化项。并对每个可视化项添加说明</p>
+            </br>
+            <a href="/design/${lab.id}/lab_4" class="button1" style="background-color: white" ><b>下一步</b></a> </br>
+            <p></p>
+                <div class="border1"><a class="a3" href="#nowhere"><strong> 4.算法选择及调参</strong></a></div>
+                <div class="border1"><a class="a3" href="#nowhere"><strong> 5.划分训练集和测试集</strong></a></div>
+                <div class="border1"><a class="a3" href="#nowhere"><strong> 6.实验结果及分析</strong></a></div>
+        </span>
         </div>
-    </div>
 
+    </div>
+</div>
+<div id="ajaxloader2" class="modal" style="display: none;margin-top: 170px;">
+    <div class="outer"></div>
+    <div class="inner"></div>
 </div>
 </body>
+
 <script language="JavaScript">
 
-    var selected = false;
-    function setClassify(classifierId) {
-        var url = "/design/${lab.id}/classify/";
-        var formId = "#classifier"+classifierId;
-        console.log(url)
-        console.log(formId)
+    var typeSelect = 0;
+
+    function changeSelectType(a,b) {
+        typeSelect = a;
+        $("#btnType1").text(b);
+        typeSelect = a;
+    }
+
+    $("#btnSubmit").click(function (id) {
+        var des = $("#modalText").val();
+        var url = "/design/${lab.id}/part1/view/add/"+typeSelect+"?des="+des;
+        console.error(url)
         $.ajax({
             type:"POST",
             url:url,
             async:true,
-            data:$(formId).serialize(),
             success:function (data) {
-                console.log(data)
-                if(data.status==0){
-                    alert("算法选择成功")
-                    selected = true;
-                    location.reload()
+                console.log(data);
+                alert("添加成功")
+                $("#myModal").modal('hide')
+            },
+            error:function (e) {
+                alert("error"+e)
+            }
+        })
+    });
+
+    $("#addBtn").click(function () {
+        var url = "/design/${lab.id}/part1/view/list"
+        $.ajax({
+            type:"POST",
+            url:url,
+            ansync:true,
+            success:function (data) {
+                var list = data.data;
+                $("button").remove(".btn-danger");
+                for(var i=0;i<list.length;i++){
+                    $("#typeSelector").append('<button class="btn btn-danger" style="margin-left: 4px">'+list[i].name+'</button>');
                 }
-                console.log(data)
+                console.log(data);
             },
             error:function (e) {
                 console.log(e)
+            }
+        })
+    })
+
+    var myChart = echarts.init(document.getElementById('echart'),"light");
+    var option = {};
+    myChart.setOption(option);
+
+    var type = 0;
+    var attribute1 = '${attributes[0]}';
+    var attribute2 = '${attributes[0]}';
+    $("#attribute1").hide();
+    $("#attribute2").hide();
+    function changeType(a,b) {
+        type = a;
+        $("#btnType").text(b);
+        if (type==1||type==4){
+            $("#attribute2").hide();
+            $("#attribute1").show();
+        }else if (type==2){
+            $("#attribute2").show();
+            $("#attribute1").show();
+        } else {
+            $("#attribute2").hide();
+            $("#attribute1").hide();
+        }
+    }
+
+    function changeAttribute1(view) {
+        attribute1 = view.text;
+        $("#btnAttribute1").text(attribute1);
+        console.error(attribute1)
+    }
+
+    function changeAttribute2(view) {
+        attribute2 = view.text;
+        $("#btnAttribute2").text(attribute2);
+        console.error(attribute2)
+    }
+
+    // $("#ajaxloader2").modal({
+    //     backdrop:false,
+    //     show:false
+    // })
+    function submit() {
+        var url = "/design/${lab.id}/attribute/"+type+"?attribute1="+attribute1+"&attribute2="+attribute2;
+        console.error(url)
+        $.ajax({
+            type:"POST",
+            url:url,
+            async:true,
+            scriptCharset: 'utf-8',
+            success:function (data) {
+                console.log(data);
+                $('#ajaxloader2').modal('hide')
+                option = $.parseJSON(data);
+                myChart.clear()
+                myChart.setOption(option);
+            },
+            error:function (e) {
+                // hidediv();
+                $('#ajaxloader2').modal('hide')
                 alert("error"+e)
             }
         })
     }
 </script>
-
 </html>

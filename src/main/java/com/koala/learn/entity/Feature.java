@@ -9,11 +9,14 @@ public class Feature {
 
     private String des;
 
-    public Feature(Integer id, String name, String label, String des) {
+    private Integer featureType;
+
+    public Feature(Integer id, String name, String label, String des,Integer featureType) {
         this.id = id;
         this.name = name;
         this.label = label;
         this.des = des;
+        this.featureType=featureType;
     }
 
     public Feature() {
@@ -52,6 +55,14 @@ public class Feature {
         this.des = des == null ? null : des.trim();
     }
 
+    public Integer getType() {
+        return featureType;
+    }
+
+    public void setType(Integer type) {
+        this.featureType = type;
+    }
+
     @Override
     public String toString() {
         return "Feature{" +
@@ -59,6 +70,7 @@ public class Feature {
                 ", name='" + name + '\'' +
                 ", label='" + label + '\'' +
                 ", des='" + des + '\'' +
+                ", type=" + featureType +
                 '}';
     }
 }

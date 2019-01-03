@@ -61,6 +61,7 @@ public class WekaUtils {
             return out;
         }
         Instances instances = readFromFile(file.getAbsolutePath());
+        instances.setClassIndex(instances.numAttributes()-1);
         ArffSaver arffSaver =new ArffSaver();
         arffSaver.setInstances(instances);
         arffSaver.setFile(out);
@@ -117,7 +118,7 @@ public class WekaUtils {
         return x;
     }
     public static void main(String[] args) throws IOException {
-        File file = new File("H:/tem/learn/36/train.arff");
-        arff2csv(file);
+        File file = new File("/Users/zangmenglei/config/diabetes.csv");
+        csv2arff(file);
     }
 }

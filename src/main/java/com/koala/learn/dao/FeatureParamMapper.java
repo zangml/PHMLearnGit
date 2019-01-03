@@ -16,6 +16,7 @@ public interface FeatureParamMapper {
     int updateByPrimaryKeySelective(FeatureParam record);
 
     int updateByPrimaryKey(FeatureParam record);
+
     List<FeatureParam> selectAllByFeatureId(Integer featureId);
 
 }

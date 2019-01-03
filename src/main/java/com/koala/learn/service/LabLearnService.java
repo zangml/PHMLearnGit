@@ -50,13 +50,20 @@ public class LabLearnService {
 
     private static final Logger logger = LoggerFactory.getLogger(LabLearnService.class);
 
-    public List<String> resolveAttribute(Lab lab) throws IOException {
+    public List<String> resolveAttribute(Lab lab,Integer instanceId) throws IOException {
         List<String> list = null;
         String value = mJedisAdapter.get(RedisKeyUtil.getAttributeListKey(lab.getId()));
         if (value==null){
-            list = resolveAttribute(new File(lab.getFile()), lab.getId());
+            String fileInstanceKey = RedisKeyUtil.getFileInstanceKey(lab.getId(),instanceId);
+            System.out.println(fileInstanceKey);
+            File input = null;
+            if (mJedisAdapter.llen(fileInstanceKey) >0){
+                input = new File(mJedisAdapter.lrange(fileInstanceKey,0,1).get(0));
+            }else {
+                input = new File(lab.getFile().replace("csv","arff"));
+            }
+            list = resolveAttribute(input,lab.getId());
         }else {
-
             list = mGson.fromJson(value,List.class);
         }
         return list;
@@ -84,7 +91,7 @@ public class LabLearnService {
         return attributeList;
     }
 
-    public void addFeature(HttpSession session, Lab lab, Feature feature, Map<String,String> map, LabInstance instance) throws IOException {
+    public void addFeature(HttpSession session, Lab lab, Feature feature, Map<String,String> map, LabInstance instance) throws Exception {
         String featureKey = RedisKeyUtil.getFeatureInstanceKey(lab.getId(),instance.getId());
         System.out.println(featureKey);
         File parent = new File(new File(lab.getFile()).getParent()+"/");
@@ -103,7 +110,7 @@ public class LabLearnService {
             String lastFile = mJedisAdapter.lrange(fileKey,0,1).get(0);
             input = new File(lastFile);
             name = getName(options,input.getName().replace(".arff","")+feature.getLabel());
-            if(feature.getId()>=5) {
+            if(feature.getType()==2||feature.getType()==3) {
                 output = new File(parent, name + ".csv");
             }else {
                 output = new File(parent, name + ".arff");
@@ -111,7 +118,7 @@ public class LabLearnService {
         }else {
             name = getName(options,feature.getLabel());
             input = new File(lab.getFile().replace("csv","arff"));
-            if(feature.getId()>=5) {
+            if(feature.getType()==2||feature.getType()==3) {
                 output = new File(parent, name + ".csv");
             }else {
                 output = new File(parent, name + ".arff");

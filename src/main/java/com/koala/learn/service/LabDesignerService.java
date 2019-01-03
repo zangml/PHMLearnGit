@@ -166,6 +166,19 @@ public class LabDesignerService {
         }
         return attributeList;
     }
+    public List<FeatureVo> selectPreFeature(){
+        List<Feature> features = mFeatureMapper.selectAllPre();
+        List<FeatureVo> voList = new ArrayList<>();
+        for (Feature feature:features){
+            FeatureVo vo = new FeatureVo();
+            System.out.println();
+            vo.setFeature(feature);
+            List<FeatureParam> paramList = mFeatureParamMapper.selectAllByFeatureId(feature.getId());
+            vo.setParamList(paramList);
+            voList.add(vo);
+        }
+        return voList;
+    }
 
     public List<FeatureVo> selectAllFeature(){
         List<Feature> features = mFeatureMapper.selectAll();
@@ -200,7 +213,14 @@ public class LabDesignerService {
         String attributeListKey = RedisKeyUtil.getAttributeListKey(lab.getId());
         List<String> atrributes = null;
         if (mJedisAdapter.get(attributeListKey) == null){
-            atrributes = WekaUtils.getAttributeList(new File(lab.getFile()));
+            String fileKey = RedisKeyUtil.getFileKey(lab.getId());
+            File input = null;
+            if (mJedisAdapter.llen(fileKey) >0){
+                input = new File(mJedisAdapter.lrange(fileKey,0,1).get(0));
+            }else {
+                input = new File(lab.getFile().replace("csv","arff"));
+            }
+            atrributes = WekaUtils.getAttributeList(input);
             mJedisAdapter.set(attributeListKey,gson.toJson(atrributes));
         }else {
             atrributes = gson.fromJson(mJedisAdapter.get(attributeListKey),List.class);
@@ -208,9 +228,9 @@ public class LabDesignerService {
         EchatsOptions options = new EchatsOptions();
         options.setTitle(new EchatsOptions.TitleBean("相关性分析","表征特征的重要程度"));
         options.setTooltip(new EchatsOptions.TooltipBean());
-        EchatsOptions.XAxisBean xAxisBean = new EchatsOptions.XAxisBean("value",true,null);
+        EchatsOptions.XAxisBean xAxisBean = new EchatsOptions.XAxisBean("value",true,new EchatsOptions.XAxisBean.AxisLabelBean());
         options.setXAxis(Arrays.asList(xAxisBean));
-        EchatsOptions.YAxisBean yAxisBean = new EchatsOptions.YAxisBean("category",true,null);
+        EchatsOptions.YAxisBean yAxisBean = new EchatsOptions.YAxisBean("category",true,new EchatsOptions.YAxisBean.AxisLabelBeanX());
         yAxisBean.setData(atrributes);
         options.setYAxis(Arrays.asList(yAxisBean));
         options.setLegend(new EchatsOptions.LegendBean(Arrays.asList("快速特征选择")));

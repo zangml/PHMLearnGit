@@ -7,10 +7,11 @@
       <arg column="name" jdbcType="VARCHAR" javaType="java.lang.String" />
       <arg column="label" jdbcType="VARCHAR" javaType="java.lang.String" />
       <arg column="des" jdbcType="VARCHAR" javaType="java.lang.String" />
+      <arg column="feature_type" jdbcType="INTEGER" javaType="java.lang.Integer" />
     </constructor>
   </resultMap>
   <sql id="Base_Column_List" >
-    id, name, label, des
+    id, name, label, des , feature_type
   </sql>
   <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
     select 
@@ -86,5 +87,13 @@
     SELECT
     <include refid="Base_Column_List" />
     from feature
+    where feature_type =1 or feature_type = 2
+  </select>
+
+  <select id="selectAllPre" resultMap="BaseResultMap">
+    SELECT
+    <include refid="Base_Column_List" />
+    from feature
+    where feature_type = 0 or feature_type = 3
   </select>
 </mapper>
