@@ -228,6 +228,29 @@
     <div class="divcss5" style="position: relative;">
         <div class="divcss5_left"  >
             <div class="container">
+                <div  style="font-size:13px; color:rgb(170,170,170); ">
+                    </br>
+                    </br>
+                    </br>
+                    <p>
+                        数据集划分是把数据集分割成训练集和测试集来分别用作不同的目的
+                    </p>
+                    <p>
+                        训练集就是要训练模型的参数，用来生成模型
+                    </p>
+                    <p>
+                        测试集数据没有在训练过程中出现，可以作为初步评估模型是否准确的数据样本，是用来评估模型的指标。
+                    </p>
+                    <p>
+                        本平台现在提供了三种数据集划分的方法：随机划分、等间距均匀划分和指定范围划分
+                    </p>
+                </div>
+                <div>
+                    <p style="font-size:15px; color:rgb(170,170,170);">
+                        本次实验采用的数据集划分方法为：
+                    </p>
+                </div>
+
                 <div class="panel col-md-3" style="margin-left: 5px">
                     <div class="panel-primary panel-heading">
                         <p align="center">${divider.name}</p>
@@ -270,7 +293,7 @@
                     <a href="nowhere" style="color: green">&#8730</a>
                     <a class="a3" ><strong> 4、算法选择及调优</strong></a>
                   </div><p></p>
-                    <p style="color: white">5、划分训练集和测试集</p>
+                    <p style="color: white">5、划分训练集和测试集 &nbsp&nbsp &nbsp&nbsp &nbsp&nbsp<span><a href="https://blog.csdn.net/mmm305658979/article/details/77967903" target="_blank">点我查看更多</a></span></p>
         <p style="color: white">${des}</p>
           <form action="/learn/lab6/${lab.id}/${instance}" method="post">
             <button data-toggle="modal" data-target="#ajaxloader2" data-backdrop="static" id="next" class="button1" >已完成，下一步</button> </br>

@@ -222,7 +222,6 @@
 
         </div>
     </div>
-
     <div class="row" style="margin-left: 100px;margin-top: 50px;">
         <label style="color: #fff;">已选择的模型：</label>
         <c:forEach var="selected" items="${selectedClassifiers}">
@@ -270,7 +269,7 @@
                     <a href="nowhere" style="color: green">&#8730</a>
                     <a class="a3" ><strong> 3、特征可视化</strong></a>
                   </div><p></p>
-                    <p style="color: white">4.算法选择及调优</p>
+                    <p style="color: white">4.算法选择及调优&nbsp&nbsp &nbsp&nbsp &nbsp&nbsp<span><a href="https://scikit-learn.org/stable/" target="_blank">点我查看算法详解</a></span></p>
                     <p style="color: white">${des}</p>
         <a href="/learn/lab5/${lab.id}/${instance}" class="button1" style="background-color: white" ><b>已完成，下一步</b></a> </br>
 

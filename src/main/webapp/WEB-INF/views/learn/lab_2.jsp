@@ -229,6 +229,29 @@
     <div class="divcss5" style="position: relative;">
         <div class="divcss5_left"  >
             <div class="container">
+                <div style="font-size:13px; color:rgb(170,170,170); ">
+                    <p>
+                        特征提取的目的是通过合适的数据分析方法从原始数据中提取与建模相关的有效特征，从而减小数据量，提高算法效率
+                    </p>
+                    <p>
+                        降维的目的在于减少计算量，提高计算效率，提高模型的泛化能力，常用的方法是基于PCA的降维
+                    </p>
+                    <p>
+                        常用的特征提取方法包括时域、频域和时频域特征提取
+                    </p>
+                    <p>
+                        时域特征包括：RMS（有效值）、峰峰值、峭度、歪度、均值、均方根、脉冲因数、波峰因数等
+                    </p>
+                    <p>
+                        频域特征提取包括：频带能量提取和特征频率表提取
+                    </p>
+                    <p> 时频域特征提取方法有：短时傅里叶变换、小波变换等</p>
+
+                </div>
+                <div>
+                    <p style="font-size:15px; color:rgb(170,170,170);">
+                        本次实验采用的特征提取方法：
+                    </p>
                 <c:forEach items="${vos}" var="vo">
                     <div class="panel col-md-3" style="margin-left: 5px">
                         <div class="panel-primary panel-heading">
@@ -247,6 +270,7 @@
                         </div>
                     </div>
                 </c:forEach>
+                </div>
 
             </div>
         </div>
@@ -262,7 +286,7 @@
                     <a href="nowhere" style="color: green">&#8730</a>
                     <a class="a3" ><strong> 1、数据预处理</strong></a>
                   </div><p></p>
-                    <p style="color: white">2、特征提取</p>
+                    <p style="color: white">2、特征提取 &nbsp&nbsp &nbsp&nbsp &nbsp&nbsp<span><a href="https://v.youku.com/v_show/id_XMzkwOTE3MzQ1Ng==.html?spm=a2h0j.11185381.listitem_page1.5!5~A" target="_blank">点我查看更多</a></span></p>
                    <p style="color: white">${des}</p>
                <a href="/learn/lab3/${labId}/${instance}" class="button1" style="background-color: white" ><b>已完成，下一步</b></a> </br>
                      <p></p>

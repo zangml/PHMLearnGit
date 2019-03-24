@@ -236,6 +236,27 @@
     <div class="divcss5" style="position: relative;">
         <div class="divcss5_left"  >
             <div class="container">
+                <div style="font-size:13px; color:rgb(170,170,170); ">
+                    <p>
+                        对于数据预处理来说，核心目标就是要降低工业场景中数据3B问题对后续建模过程的影响。
+                    </p>
+                    <p>
+                        常见的数据处理的方法，包括工况分割，数据清洗，平滑，针对振动数据的质量检测，数据的规划，数据的样本平衡和数据的分割。
+                    </p>
+                    <p>
+                        本平台主要封装了一些数据清洗和样本平衡的算法，用于把数据中的异常点尽可能的剔除，降低对模型训练的干扰。
+                    </p>
+                    <p>
+                        在数据清洗过程中的算法有One Class SVM、Isolation forest等。
+                    </p>
+                    <p>
+                        样本平衡算法主要是SMOTE数据过采样算法，解决采集上来数据的标签非常不均等的问题。
+                    </p>
+                </div>
+                <div>
+                    <p style="font-size:15px; color:rgb(170,170,170);">
+                        本次实验采用的数据预处理方法：
+                    </p>
                 <c:forEach items="${vos}" var="vo">
                     <div class="panel col-md-3" style="margin-left: 5px">
                         <div class="panel-primary panel-heading">
@@ -254,6 +275,7 @@
                         </div>
                     </div>
                 </c:forEach>
+                </div>
 
             </div>
         </div>
@@ -265,15 +287,12 @@
                    <a href="#" class="button">重置进度</a>
                     <a href="#" class="button" style="background-color: red">结束实验</a>
                     <hr>
-                  <div class="border1">
-                    <a href="nowhere" style="color: green">&#8730</a>
-                    <a class="a3"><strong> 1、实验数据</strong></a>
-                  </div><p></p>
-                    <p style="color: white">2、数据预处理</p>
-         <p style="color: white">${des}</p>
-        <a href="/learn/lab3/${labId}/${instance}" class="button1" style="background-color: white" ><b>已完成，下一步</b></a> </br>
+                    <p style="color: white">1、数据预处理 &nbsp&nbsp &nbsp&nbsp &nbsp&nbsp<span><a href="https://blog.csdn.net/weixin_36688519/article/details/86218279#_8" target="_blank">点我查看更多</a></span></p>
+         <p style="color: white">${des}</p>>
+        <a href="/learn/lab2/${labId}/${instance}" class="button1" style="background-color: white" ><b>已完成，下一步</b></a> </br>
         <p></p>
-                <div class="border1"><a class="a3" href="#nowhere"><strong> 3.特征提取</strong></a></div>
+                <div class="border1"><a class="a3" href="#nowhere"><strong> 2.特征提取</strong></a></div>
+                <div class="border1"><a class="a3" href="#nowhere"><strong> 3.特征可视化</strong></a></div>
                 <div class="border1"><a class="a3" href="#nowhere"><strong> 4.算法选择及调参</strong></a></div>
                 <div class="border1"><a class="a3" href="#nowhere"><strong> 5.划分训练集和测试集</strong></a></div>
                 <div class="border1"><a class="a3" href="#nowhere"><strong> 6.查看训练结果</strong></a></div>
@@ -299,7 +318,7 @@
             success:function (data) {
                 $('#ajaxloader2').modal('hide')
                 if(data.status==0){
-                    alert("特征提取成功")
+                    alert("数据预处理完成")
                 }
                 console.log(data)
             },
